@@ -20,7 +20,6 @@ namespace WindowsGame2
         public int  X;
         public int  Y;        
     }; 
-
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
@@ -31,6 +30,13 @@ namespace WindowsGame2
         World world1;
         SpriteFont font;        
         public static int NO_DESAYUNOS = 10;
+        public static int dulces = 10;
+        Texture2D miDulce;
+        // datos torre
+        Torre torre;
+        Vector2 vectorTorre = new Vector2(720, 0);
+        //fin datos torre
+
 
         public Game1()
         {
@@ -50,7 +56,9 @@ namespace WindowsGame2
             alien1 = new Alien(new Vector2(10, 126), ruta, "alien1");
             alien2 = new Alien(new Vector2(50, 126), ruta, "alien2");
             // Creamos un mundo
-            world1 = new World(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);            
+            world1 = new World(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height); 
+            //iniciamos el objeto torre, enviamos por parametro la posicion y  graphics
+            torre = new Torre(graphics, vectorTorre,dulces);
             base.Initialize();
         }
         
@@ -61,9 +69,12 @@ namespace WindowsGame2
             // TODO: use this.Content to load your game content here
             font = Content.Load<SpriteFont>("SpriteFont1");
             lunch = Content.Load<Texture2D>("lunch");
+            miDulce = Content.Load<Texture2D>("dulces");
             world1.LoadContent(Content);
             alien1.LoadContent(Content);
             alien2.LoadContent(Content);
+            torre.cargarTorre(Content);
+            dulces = torre.restarDulce();
         }
 
         protected override void UnloadContent()
@@ -80,6 +91,8 @@ namespace WindowsGame2
             // TODO: Add your update logic here
             alien1.Update();
             alien2.Update();
+            torre.Update();
+            
             base.Update(gameTime);
         }        
         protected override void Draw(GameTime gameTime)
@@ -93,11 +106,16 @@ namespace WindowsGame2
             world1.Draw(spriteBatch);
             alien1.Draw(spriteBatch);
             alien2.Draw(spriteBatch);
+            //carca el metodo debujar para crearlo en  la clase principal
+            torre.dibujar(spriteBatch);
             spriteBatch.Draw(lunch, new Rectangle(725, 420, 48, 48), Color.White);
             spriteBatch.DrawString(font, "No Almuerzos:"+NO_DESAYUNOS, textVector, Color.Red);
+            spriteBatch.Draw(miDulce, new Rectangle(380, 5, miDulce.Width, miDulce.Height), Color.White);
+            spriteBatch.DrawString(font, " " + dulces, new Vector2(400,5), Color.Blue);
             spriteBatch.End();
-
+            
             base.Draw(gameTime);
         }
+        
     }
 }
